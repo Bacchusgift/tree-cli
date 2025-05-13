@@ -9,7 +9,7 @@ A command-line tool written in Go for displaying directory structures in a tree-
 - Show full file paths
 - Flat (no-indent) display mode
 - Output results to a file
-- Colored output for better readability
+- Colored output with customizable colors
 
 ## Command Line Options
 - `-L` Set the maximum display depth
@@ -18,6 +18,7 @@ A command-line tool written in Go for displaying directory structures in a tree-
 - `-f` Show full paths
 - `-i` Flat display (no indentation)
 - `-o` Output to file
+- `-c` Set output color (available: red, blue, green, yellow, magenta, cyan)
 
 ## Usage
 ```sh
@@ -41,6 +42,9 @@ A command-line tool written in Go for displaying directory structures in a tree-
 
 # Output to a file
 ./tree-cli -o output.txt
+
+# Display with custom color
+./tree-cli -c blue
 ```
 
 ## Build

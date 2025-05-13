@@ -18,6 +18,7 @@ type Options struct {
 	FullPath   bool
 	NoIndent   bool
 	OutputFile string
+	Color      string
 }
 
 // 定义树状结构的绘制字符
@@ -89,6 +90,7 @@ func parseFlags() *Options {
 	flag.BoolVar(&opts.FullPath, "f", false, "显示完整路径")
 	flag.BoolVar(&opts.NoIndent, "i", false, "不缩进，平铺显示")
 	flag.StringVar(&opts.OutputFile, "o", "", "输出到文件")
+	flag.StringVar(&opts.Color, "c", "green", "设置输出颜色")
 
 	flag.Parse()
 	return opts
@@ -122,6 +124,23 @@ func walkDir(path, indent string, output *os.File, opts *Options, depth int, cou
 			}
 		}
 		entries = filtered
+	}
+
+	// 根据颜色选项设置颜色函数
+	var colorFunc func(a ...interface{}) string
+	switch opts.Color {
+	case "red":
+		colorFunc = color.New(color.FgRed).SprintFunc()
+	case "blue":
+		colorFunc = color.New(color.FgBlue).SprintFunc()
+	case "yellow":
+		colorFunc = color.New(color.FgYellow).SprintFunc()
+	case "magenta":
+		colorFunc = color.New(color.FgMagenta).SprintFunc()
+	case "cyan":
+		colorFunc = color.New(color.FgCyan).SprintFunc()
+	default:
+		colorFunc = color.New(color.FgGreen).SprintFunc()
 	}
 
 	// 遍历目录内容
@@ -161,13 +180,12 @@ func walkDir(path, indent string, output *os.File, opts *Options, depth int, cou
 		}
 
 		// 输出当前行（根据节点类型设置颜色）
-		green := color.New(color.FgGreen).SprintFunc()
 		if isDir {
 			// 目录使用普通颜色
 			fmt.Fprintln(output, line)
 		} else {
-			// 文件（叶子节点）使用绿色
-			fmt.Fprintln(output, green(line))
+			// 文件（叶子节点）使用指定颜色
+			fmt.Fprintln(output, colorFunc(line))
 		}
 
 		// 更新计数器
